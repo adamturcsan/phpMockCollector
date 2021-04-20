@@ -1,0 +1,19 @@
+{
+  "get": [
+    {
+      "header":[
+        {
+          "content": "X-Bla",
+          "code": 200
+
+        },
+        {
+          "content": "z-bla"
+
+        }
+      ],
+      "latency": 5,
+      "body": "Hallo Welt"
+    }
+  ]
+}
