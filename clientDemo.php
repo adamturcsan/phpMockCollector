@@ -4,7 +4,7 @@ require_once 'vendor/autoload.php';
 
 use Symfony\Component\HttpFoundation\Request;
 
-$test = awaitCall("hello", 'GET',60);
+$test = awaitCall("hellophp", 'GET',60);
 if($test){
     print $test->getPathInfo();
 }
@@ -20,8 +20,12 @@ function awaitCall($path, $methode = 'GET', $timeout = 1200): Request{ //1200 Se
             )
         ));
 
-        $result = file_get_contents($host."getCallPayload/".$methode.'/'.$path, false, $ctx);
-        $req = unserialize(base64_decode($result));
+        $rawresult = file_get_contents($host."getCallPayload/".$methode.'/'.$path, false, $ctx);
+        $result = json_decode($rawresult,true);
+        $req = unserialize(base64_decode($result['request']));
+        $data = $result['adddata'];
+        //var_dump($data);
+        //ToTo return a class that includes request + adddata.
     }
     catch(Exception $e){
         print $e;

@@ -51,7 +51,7 @@ else {
         mkdir(dirname($datapath), 0700, true);
     }
 
-    file_put_contents($datapath, base64_encode(serialize($request)));
+
 
     $config = json_decode(file_get_contents($configpath), true);
     if (!isset($config[$methode])) {
@@ -61,7 +61,7 @@ else {
     $conf = $config[$methode][0];
     if (isset($conf['customcontroller'])) {
         require_once dirname($configpath).DIRECTORY_SEPARATOR.$conf['customcontroller'].".php";
-        customController($request);
+        $adddata = customController($request);
     } else {
         if (isset($conf['latency'])) {
             sleep($conf['latency']);
@@ -75,7 +75,10 @@ else {
             }
         }
         print $conf['body'];
+        $adddata = [];
     }
+    $data = array("adddata" => $adddata, 'request' => base64_encode(serialize($request)));
+    file_put_contents($datapath, json_encode($data));
 }
 
 
