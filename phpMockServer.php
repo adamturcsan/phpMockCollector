@@ -1,7 +1,9 @@
 <?php
-
-
 namespace dagsta\pms;
+
+require_once "customCallbackInterface.php";
+
+
 
 
 use Symfony\Component\HttpFoundation\Request;
@@ -46,9 +48,21 @@ class phpMockServer
             $this->response->setStatusCode(404);
             return false;
         }
-        if (isset($conf['customcontroller'])) {
-            require_once dirname($this->getConfigPath()).DIRECTORY_SEPARATOR.$conf['customcontroller'].".php";
-            $adddata = customController($this->request);
+        if (isset($conf['customCallback'])) {
+            $classFilePath = dirname($this->getConfigPath()) . DIRECTORY_SEPARATOR . $conf['customCallback'] . ".php";
+            try {
+                if (file_exists($classFilePath)) {
+                    require_once $classFilePath;
+                    if (class_exists($conf['customCallback'])) {
+                        $controller = new $conf['customCallback']();
+                        $adddata = $controller->run($this->request, $this->response);
+                    }
+                }
+            }
+            catch(\Exception $e){
+                $this->response->setContent("Failed to call customCallbock:".$conf['customCallback'].PHP_EOL.$e->getMessage());
+                return false;
+            }
         } else {
             if (isset($conf['latency'])) {
                 sleep($conf['latency']);
