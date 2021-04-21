@@ -1,5 +1,5 @@
 {
-  "get": [
+  "GET": [
     {
       "customcontroller":"custcon1"
     }

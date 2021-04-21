@@ -1,9 +1,9 @@
 {
-  "get": [
+  "GET": [
     {
       "header":[
         {
-          "content": "X-Bla",
+          "content": "X-Bla: Hallo",
           "code": 200
 
         },
