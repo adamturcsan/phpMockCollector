@@ -73,19 +73,49 @@ class phpMockServer
             if(isset($conf['httpcode'])){
                 $this->response->setStatusCode($conf['httpcode']);
             }
-            $this->response->setContent($conf['body']);
+            if(is_array($conf['body']))
+            {
+                $this->response->headers->set('Content-Type', 'application/json');
+                $this->response->setContent(json_encode($conf['body']));
+            }
+            else{
+                $this->response->setContent($conf['body']);
+            }
             $adddata = [];
         }
         $this->storeMockRequest($adddata);
         return true;
     }
 
+    private function checkRules($rules): bool{
+        foreach($rules as $rule){
+            if(isset($rule['param'])){
+                foreach($rule['param'] as $paramrule){
+                    foreach($paramrule as $key => $value){
+                        if($value == "*"){
+                            if($this->request->get($key) === null){
+                                return false;
+                            }
+                        }else{
+                            if($this->request->get($key) !== $value){
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
     function selectMatchingConfig(){
         $config = $this->getMockConfig();
         $methode = $this->getMethode();
-        if(isset($config[$methode][0])){
-            
-            return $config[$methode][0];
+        foreach($config[$methode] as $key => $mock){
+            if(!isset($mock['rules']) OR $this->checkRules($mock['rules']))
+            {
+                return $mock;
+            }
         }
         return false;
     }
