@@ -5,14 +5,17 @@ namespace dagsta\pms;
 
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class phpMockServer
 {
     private $request;
+    private $response;
     private const FETCHCALL = 1;
     private const MOCKCALL = 2;
     function __construct() {
         $this->request = Request::createFromGlobals();
+        $this->response= new Response();
     }
     function run(): void {
         if($this->determineRequestType() == self::FETCHCALL){
@@ -20,6 +23,7 @@ class phpMockServer
         } else{
           $this->performMockRequest();
         }
+        $this->response->send();
     }
 
     function performCallFetch(): void{
@@ -38,8 +42,8 @@ class phpMockServer
     function performMockRequest(): bool{
         $conf = $this->selectMatchingConfig();
         if($conf === false){
-            header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found", true, 404);
-            print("Not Found");
+            $this->response->setContent('No Mock found for this endpoint');
+            $this->response->setStatusCode(404);
             return false;
         }
         if (isset($conf['customcontroller'])) {
@@ -50,14 +54,12 @@ class phpMockServer
                 sleep($conf['latency']);
             }
             if (isset($conf['header'])) {
-                foreach ($conf['header'] as $header) {
-                    if (!isset($header['code'])) {
-                        $header['code'] = null;
-                    }
-                    header($header['content'], true, $header['code']);
-                }
+                $this->response->headers->add($conf['header']);
             }
-            print $conf['body'];
+            if(isset($conf['httpcode'])){
+                $this->response->setStatusCode($conf['httpcode']);
+            }
+            $this->response->setContent($conf['body']);
             $adddata = [];
         }
         $this->storeMockRequest($adddata);
@@ -68,6 +70,7 @@ class phpMockServer
         $config = $this->getMockConfig();
         $methode = $this->getMethode();
         if(isset($config[$methode][0])){
+            
             return $config[$methode][0];
         }
         return false;
@@ -118,9 +121,8 @@ class phpMockServer
     private function readMockedRequest(){
         $configpath = $this->getConfigPath();
         if(!file_exists($configpath)){
-            header($_SERVER["SERVER_PROTOCOL"]." 404 
-            ", true, 404);
-            print("NOT FOUND1");
+            $this->response->setContent('No Mockconfiguration found for this endpoint');
+            $this->response->setStatusCode(404);
             return;
         }
         $datapath = 'data/'.$this->request->getMethod().DIRECTORY_SEPARATOR
@@ -132,9 +134,11 @@ class phpMockServer
             $count++;
         }
         if($count == $timeout) {
-            print("TIMEOUT ".$timeout);
+            $this->response->setContent('Timeout');
+            $this->response->setStatusCode(500);
         }
-        print file_get_contents($datapath);
+        $this->response->setContent(file_get_contents($datapath));
+        $this->response->setStatusCode(200);
         unlink($datapath);
     }
 

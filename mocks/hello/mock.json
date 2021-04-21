@@ -3,15 +3,13 @@
     {
       "header":[
         {
-          "content": "X-Bla: Hallo",
-          "code": 200
-
+          "X-Bla": "Hallo"
         },
         {
-          "content": "z-bla"
-
+          "z-bla": "z-bla"
         }
       ],
+      "httpcode": 200,
       "latency": 5,
       "body": "Hallo Welt"
     }
