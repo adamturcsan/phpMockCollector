@@ -1,49 +1,40 @@
 {
   "GET": [
     {
-      "rules": [{
-        "param": [{
+      "rules": {
+        "param": {
           "hallo": "b"
-        }]
-      }],
-      "header":[
-        {
-          "X-Bla": "Hallo"
-        },
-        {
-          "z-bla": "z-bla"
         }
-      ],
+      },
+      "header":
+        {
+          "X-Bla": "Hallo",
+          "z-bla": "z-bla"
+        },
       "httpcode": 200,
       "latency": 2,
       "body": "Hallo Welt with hallo param is b"
     },{
-      "rules": [{
-        "param": [{
+      "rules": {
+        "param": {
           "hallo": "*"
-        }]
-      }],
-      "header":[
-        {
-          "X-Bla": "Hallo"
-        },
-        {
-          "z-bla": "z-bla"
         }
-      ],
+      },
+      "header":
+      {
+        "X-Bla": "Hallo",
+        "z-bla": "z-bla"
+      },
       "httpcode": 200,
       "latency": 2,
       "body": "Hallo Welt with hallo * param"
     },
     {
-      "header":[
-        {
-          "X-Bla": "Hallo"
-        },
-        {
-          "z-bla": "z-bla"
-        }
-      ],
+      "header":
+      {
+        "X-Bla": "Hallo",
+        "z-bla": "z-bla"
+      },
       "httpcode": 200,
       "latency": 5,
       "body": "Hallo Welt"

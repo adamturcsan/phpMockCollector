@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 $test = awaitCall("hellophp", 'GET',60);
 if($test){
     print $test->getPathInfo();
+    print $test->getMethod();
 }
 
 

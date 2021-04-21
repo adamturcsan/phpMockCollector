@@ -4,8 +4,6 @@ namespace dagsta\pms;
 require_once "customCallbackInterface.php";
 
 
-
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -88,22 +86,18 @@ class phpMockServer
     }
 
     private function checkRules($rules): bool{
-        foreach($rules as $rule){
-            if(isset($rule['param'])){
-                foreach($rule['param'] as $paramrule){
-                    foreach($paramrule as $key => $value){
-                        if($value == "*"){
-                            if($this->request->get($key) === null){
-                                return false;
-                            }
-                        }else{
-                            if($this->request->get($key) !== $value){
-                                return false;
-                            }
-                        }
-                    }
+        foreach($rules as $type => $ruleset) {
+            $classname = __NAMESPACE__.'\\rules\\' . strtolower($type) . "RuleImplementation";
+            if (class_exists($classname)){
+                if (!$classname::check($this->request, $ruleset)) {
+                    return false;
                 }
             }
+            else{
+                //ToDo Display Error?!?
+                return false;
+            }
+
         }
         return true;
     }
