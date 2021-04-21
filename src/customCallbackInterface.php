@@ -1,4 +1,5 @@
 <?php
+namespace dagsta\pms;
 
 interface customCallbackInterface
 {

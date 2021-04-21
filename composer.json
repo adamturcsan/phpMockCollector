@@ -1,5 +1,8 @@
 {
     "require": {
         "symfony/http-foundation": "^5.2"
-    }
+    },
+        "autoload": {
+            "psr-4": {"dagsta\\pms\\": "src/"}
+        }
 }
