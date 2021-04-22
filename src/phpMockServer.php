@@ -201,6 +201,4 @@ class phpMockServer
             return json_decode(file_get_contents($configpath),true);
         }
     }
-
-
 }
