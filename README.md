@@ -35,5 +35,20 @@ bodyregex: a list of regex that would be performed on the body content
 
 You can implement additional rules by implementing the ruleImplementationInterface. 
 
+#Integrations
+##Codeception
+You can use the Mock Request inside of codeceptiontests by adding the MockAwaitModule to your Testsuite:
+```yaml
+actor: ApiTester
+modules:
+    enabled:
+        - \Helper\Api
+        - REST:
+            url: https://jsonplaceholder.typicode.com/
+            depends: PhpBrowser
+        - \dagsta\pms\integrations\codeception\MockAwait
+```
+
+
 # Include Payload validation in external Tests
 For every request to the mock server you can await the payload + additional data with the awaitcall function in clientDemo.php (This has to be transfered to a codeception module/helper). You can define a path , a methode (GET, POST, PUT, ...) and the timeout to wait for the response.
