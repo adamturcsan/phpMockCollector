@@ -1,4 +1,16 @@
 {
+  "POST": [
+    {
+      "rules": {
+        "bodyregex": [
+          "/Welt/m"
+        ]
+      },
+      "body": "Hallo Post with regex"
+    },{
+      "body": "Hallo Post"
+    }
+  ],
   "GET": [
     {
       "rules": {

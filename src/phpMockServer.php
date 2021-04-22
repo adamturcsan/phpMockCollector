@@ -105,10 +105,13 @@ class phpMockServer
     function selectMatchingConfig(){
         $config = $this->getMockConfig();
         $methode = $this->getMethode();
-        foreach($config[$methode] as $key => $mock){
-            if(!isset($mock['rules']) OR $this->checkRules($mock['rules']))
-            {
-                return $mock;
+        if(isset($config[$methode]))
+        {
+            foreach($config[$methode] as $key => $mock){
+                if(!isset($mock['rules']) OR $this->checkRules($mock['rules']))
+                {
+                    return $mock;
+                }
             }
         }
         return false;
