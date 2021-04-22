@@ -175,7 +175,7 @@ class phpMockServer
             $this->response->setStatusCode(404);
             return;
         }
-        $datapath = __DIR__.'/../data/'.$this->request->getMethod().DIRECTORY_SEPARATOR
+        $datapath = __DIR__.'/../data/'.$this->getMethode()
             .$this->getPath();
         $timeout = $this->request->headers->get("X-timeout", 60);
         $count = 0;
