@@ -1,8 +1,12 @@
 #How to use:
 
-Just start a Webserver that rewrite every request to index.php
+Create a new instance of phpMockServer and run the run methode:
+```php
+$ms = new \dagsta\pms\phpMockServer(__DIR__."/mocks");
+$ms->run();
+```
 
-After that you can define mocks in the mockfolder:
+After that you can define mocks in the mockfolder (By default it is ../mocks based from the phpMockServer.php file but can be configured by the constructor):
 
 If you want to create a mock for /hello/world create the folders /hello/world and place a mock.json in it.
 

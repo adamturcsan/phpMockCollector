@@ -13,9 +13,18 @@ class phpMockServer
     private $response;
     private const FETCHCALL = 1;
     private const MOCKCALL = 2;
-    function __construct() {
+
+    private $configBasePath;
+    function __construct($configBasePath = null) {
         $this->request = Request::createFromGlobals();
         $this->response= new Response();
+        if(!is_null($configBasePath)){
+            $this->configBasePath = $configBasePath;
+        }
+        else{
+            $this->configBasePath = __DIR__.'/../mocks';
+        }
+
     }
     function run(): void {
         if($this->determineRequestType() == self::FETCHCALL){
@@ -36,7 +45,7 @@ class phpMockServer
             unset($parts[count($parts) - 1]);
         }
         $path = implode("/", $parts);
-        return __DIR__.'/../mocks/' . $path . DIRECTORY_SEPARATOR . "mock.json";
+        return $this->configBasePath. DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "mock.json";
     }
 
     function performMockRequest(): bool{
