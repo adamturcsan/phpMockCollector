@@ -150,7 +150,7 @@ class phpMockServer
     }
 
     private function storeMockRequest($adddata = []){
-        $datapath = __DIR__.'../data/'.$this->request->getMethod().DIRECTORY_SEPARATOR
+        $datapath = __DIR__.'/../data/'.$this->request->getMethod().DIRECTORY_SEPARATOR
             .$this->getPath();
         if (!file_exists(dirname($datapath))) {
             mkdir(dirname($datapath), 0700, true);
@@ -166,7 +166,7 @@ class phpMockServer
             $this->response->setStatusCode(404);
             return;
         }
-        $datapath = __DIR__.'../data/'.$this->request->getMethod().DIRECTORY_SEPARATOR
+        $datapath = __DIR__.'/../data/'.$this->request->getMethod().DIRECTORY_SEPARATOR
             .$this->getPath();
         $timeout = $this->request->headers->get("X-timeout", 60);
         $count = 0;
