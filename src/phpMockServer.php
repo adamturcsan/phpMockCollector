@@ -35,7 +35,7 @@ class phpMockServer
         $this->response->send();
     }
 
-    function performCallFetch(): void{
+    private function performCallFetch(): void{
         $this->readMockedRequest();
     }
 
@@ -48,7 +48,7 @@ class phpMockServer
         return $this->configBasePath. DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "mock.json";
     }
 
-    function performMockRequest(): bool{
+    private function performMockRequest(): bool{
         $conf = $this->selectMatchingConfig();
         if($conf === false){
             $this->response->setContent('No Mock found for this endpoint');
@@ -200,5 +200,8 @@ class phpMockServer
         else{
             return json_decode(file_get_contents($configpath),true);
         }
+    }
+    public function getResponseObject(): Response {
+        return $this->response;
     }
 }
