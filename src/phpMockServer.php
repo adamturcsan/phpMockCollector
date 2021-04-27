@@ -240,6 +240,7 @@ class phpMockServer
         }
         return [];
     }
-
-
+    public function getResponseObject(): Response {
+        return $this->response;
+    }
 }
