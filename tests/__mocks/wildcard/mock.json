@@ -1,0 +1,16 @@
+{
+  "path": [{
+    "route": "\\/.*\\/hallo",
+    "GET": [
+      {
+        "header":
+        {
+          "X-Bla": "Hallo",
+          "z-bla": "z-bla"
+        },
+        "httpcode": 200,
+        "body": "Hallo Wildcard"
+      }
+    ]
+  }]
+}

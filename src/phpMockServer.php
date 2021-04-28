@@ -23,12 +23,14 @@ class phpMockServer
     private const MOCKCALL = 2;
 
     private $configBasePath;
+    private $pathParams;
 
     function __construct(string $configBasePath)
     {
         $this->request = Request::createFromGlobals();
         $this->response = new Response();
         $this->configBasePath = $configBasePath;
+        $this->pathParams = [];
     }
 
     public function run(): void
@@ -46,14 +48,24 @@ class phpMockServer
         $this->readMockedRequest();
     }
 
-    private function getConfigPath(): string
+    private function getConfigPath($onlyRelativPath = false): string
     {
         $parts = explode("/", $this->getPath());
         if ($parts[count($parts) - 1] == "") {
             unset($parts[count($parts) - 1]);
         }
-        $path = implode("/", $parts);
-        return $this->configBasePath . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "mock.json";
+        do{
+            $path = implode("/", $parts);
+            $filepath = $this->configBasePath . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "mock.json";
+            array_pop($parts);
+        }while(count($parts) > 0 && !file_exists($filepath));
+        if($onlyRelativPath){
+            return $path;
+        }
+        else{
+            return $filepath;
+        }
+
     }
 
     protected function performMockRequest(): bool
@@ -129,13 +141,31 @@ class phpMockServer
         return true;
     }
 
+    protected function validatePath($path): bool{
+        $matches = [];
+        if(preg_match("/".$path."/",$this->request->getPathInfo(),$matches) !== false)
+        {
+            $this->pathParams = $matches;
+            return true;
+        }
+        return false;
+    }
+
     protected function selectMatchingConfig()
     {
         $config = $this->getMockConfig();
         $methode = $this->getMethode();
+        if(isset($config['path'])){
+            $regexedPath = "\\/".str_replace("/","\\/",$this->getConfigPath(true));
+            foreach ($config = $config['path'] as $path){
+                if($this->validatePath($regexedPath.$path['route']))
+                {
+                    $config = $path;
+                }
+            }
+        }
         if (isset($config[$methode])) {
             foreach ($config[$methode] as $key => $mock) {
-                /* I think we have to order mocks by presence of rules and take not the first without rules, but rather the one with matching rule */
                 if (!isset($mock[self::MOCK_KEY_RULES]) or $this->checkRules($mock[self::MOCK_KEY_RULES])) {
                     return $mock;
                 }

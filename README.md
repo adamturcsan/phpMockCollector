@@ -25,6 +25,23 @@ customCallback: the Classname of the customCallback that should be used to creat
 rules: An array of rules that has to apply for this response. See rules
 ```
 
+On top of this you can define wildcard routes. For that you have to place the configuration for the methode into an object with an path element that holds an regex:
+
+```json
+{
+  "path": [{
+    "route": "\\/.*\\/hallo",
+    "GET": [
+      {
+        ...
+      }
+    ]
+  }]
+}
+
+```
+
+
 ##rules
 You can configure rules like this:
 
