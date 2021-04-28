@@ -1,0 +1,55 @@
+{
+  "POST": [
+    {
+      "rules": {
+        "bodyregex": [
+          "/Welt/m"
+        ]
+      },
+      "body": "Hallo Post with regex"
+    },{
+      "body": "Hallo Post"
+    }
+  ],
+  "GET": [
+    {
+      "rules": {
+        "param": {
+          "hallo": "b"
+        }
+      },
+      "header":
+        {
+          "X-Bla": "Hallo",
+          "z-bla": "z-bla"
+        },
+      "httpcode": 200,
+      "latency": 2,
+      "body": "Hallo Welt with hallo param is b"
+    },{
+      "rules": {
+        "param": {
+          "hallo": "*"
+        }
+      },
+      "header":
+      {
+        "X-Bla": "Hallo",
+        "z-bla": "z-bla"
+      },
+      "httpcode": 200,
+      "latency": 2,
+      "body": "Hallo Welt with hallo * param"
+    },
+    {
+      "header":
+      {
+        "X-Bla": "Hallo",
+        "z-bla": "z-bla"
+      },
+      "httpcode": 200,
+      "latency": 5,
+      "body": "Hallo Welt"
+    }
+  ]
+}
