@@ -30,7 +30,7 @@ On top of this you can define wildcard routes. For that you have to place the co
 ```json
 {
   "path": [{
-    "route": "\\/.*\\/hallo",
+    "route": "{{regex}}",
     "GET": [
       {
         ...
