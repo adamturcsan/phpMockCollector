@@ -141,9 +141,10 @@ class phpMockServer
         return true;
     }
 
-    protected function validatePath($regex_pattern): bool{
+    protected function validatePath($configPath, $regexPatternPath): bool{
         $matches = [];
-        if(preg_match("/".$regex_pattern."/",$this->request->getPathInfo(),$matches) !== false)
+        $regexPatternGlobalPath = "\\/".str_replace("/","\\/",$configPath);
+        if(preg_match("/".$regexPatternGlobalPath.$regexPatternPath."/",$this->request->getPathInfo(),$matches) !== false)
         {
             $this->pathParams = $matches;
             return true;
@@ -156,9 +157,9 @@ class phpMockServer
         $config = $this->getMockConfig();
         $methode = $this->getMethode();
         if(isset($config['path'])){
-            $regexedPath = "\\/".str_replace("/","\\/",$this->getConfigPath(true));
+
             foreach ($config = $config['path'] as $path){
-                if($this->validatePath($regexedPath.$path['route']))
+                if($this->validatePath($this->getConfigPath(true),$path['route']))
                 {
                     $config = $path;
                 }
