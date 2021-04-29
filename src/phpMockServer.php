@@ -141,9 +141,9 @@ class phpMockServer
         return true;
     }
 
-    protected function validatePath($path): bool{
+    protected function validatePath($regex_pattern): bool{
         $matches = [];
-        if(preg_match("/".$path."/",$this->request->getPathInfo(),$matches) !== false)
+        if(preg_match("/".$regex_pattern."/",$this->request->getPathInfo(),$matches) !== false)
         {
             $this->pathParams = $matches;
             return true;
