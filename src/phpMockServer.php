@@ -143,8 +143,8 @@ class phpMockServer
 
     protected function validatePath($configPath, $regexPatternPath): bool{
         $matches = [];
-        $regexPatternGlobalPath = "\\/".str_replace("/","\\/",$configPath);
-        if(preg_match("/".$regexPatternGlobalPath.$regexPatternPath."/",$this->request->getPathInfo(),$matches) !== false)
+        //$regexPatternGlobalPath = "|".str_replace("/","|",$configPath);
+        if(preg_match("|".$configPath.$regexPatternPath."|",$this->request->getPathInfo(),$matches) !== false)
         {
             $this->pathParams = $matches;
             return true;
