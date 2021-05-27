@@ -150,8 +150,8 @@ final class PmcTest extends TestCase
     }
 
     public function testIfRequestIsStored(): void {
-        $this->assertFileExists(__DIR__."/../data/GET/hello");
-        $this->assertEquals(file_get_contents(__DIR__."/__data/request_hello"), file_get_contents(__DIR__."/../data/GET/hello"), "Request is not correct");
+        $this->assertFileExists(__DIR__."/../data/GET/hello.dat");
+        $this->assertEquals(file_get_contents(__DIR__."/__data/request_hello"), file_get_contents(__DIR__."/../data/GET/hello.dat"), "Request is not correct");
     }
 
     public function testFetchRequest(): void {

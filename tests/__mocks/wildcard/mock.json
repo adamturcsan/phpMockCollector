@@ -1,6 +1,6 @@
 {
   "path": [{
-    "route": "\\/.*\\/hallo",
+    "route": "/.*/hallo",
     "GET": [
       {
         "header":

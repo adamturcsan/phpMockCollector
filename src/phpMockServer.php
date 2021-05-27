@@ -162,9 +162,11 @@ class phpMockServer
                 if($this->validatePath($this->getConfigPath(true),$path['route']))
                 {
                     $config = $path;
+                    break;
                 }
             }
         }
+        
         if (isset($config[$methode])) {
             foreach ($config[$methode] as $key => $mock) {
                 if (!isset($mock[self::MOCK_KEY_RULES]) or $this->checkRules($mock[self::MOCK_KEY_RULES])) {
@@ -229,7 +231,7 @@ class phpMockServer
     private function storeMockRequest($adddata = [])
     {
         $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR
-            . $this->getPath();
+            . $this->getPath().".dat";
         if (!file_exists(dirname($datapath))) {
             mkdir(dirname($datapath), 0700, true);
         }
@@ -247,7 +249,7 @@ class phpMockServer
             return;
         }
         $datapath = __DIR__ . '/../data/' . $this->getMethode()
-            . $this->getPath();
+            . $this->getPath().".dat";
         $timeout = $this->request->headers->get("X-timeout", 60);
         $count = 0;
         while ($count < $timeout && !file_exists($datapath)) {
