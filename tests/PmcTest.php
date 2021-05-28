@@ -208,5 +208,15 @@ final class PmcTest extends TestCase
         );
         $this->assertEqualsCanonicalizing($returnVal,["header" => ['X-Bla' => "Hallo", "z-bla" => "z-bla"], "httpcode" => 200,  "body" => "Hallo Wildcard"]);
     }
+    public function testGetConfigForSecondWildcart(): void{
+        $_SERVER['REQUEST_URI'] = "/wildcard/1/2/hallo";
+        $_GET = [];
+        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+            $m,
+            'selectMatchingConfig'
+        );
+        $this->assertEqualsCanonicalizing($returnVal,["header" => ['X-Bla' => "Hallo", "z-bla" => "z-bla"], "httpcode" => 200,  "body" => "Hallo Wildcard2"]);
+    }
 
 }

@@ -1,6 +1,6 @@
 {
   "path": [{
-    "route": "/.*/hallo",
+    "route": "/[^/]+/hallo",
     "GET": [
       {
         "header":
@@ -12,5 +12,19 @@
         "body": "Hallo Wildcard"
       }
     ]
-  }]
+  },
+    {
+      "route": "/[^/]+/2/hallo",
+      "GET": [
+        {
+          "header":
+          {
+            "X-Bla": "Hallo",
+            "z-bla": "z-bla"
+          },
+          "httpcode": 200,
+          "body": "Hallo Wildcard2"
+        }
+      ]
+    }]
 }
