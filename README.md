@@ -2,7 +2,7 @@
 
 Create a new instance of phpMockServer and run the run methode:
 ```php
-$ms = new \dagsta\pms\phpMockServer(__DIR__."/mocks");
+$ms = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/mocks");
 $ms->run();
 ```
 
@@ -63,7 +63,7 @@ modules:
         - REST:
             url: https://jsonplaceholder.typicode.com/
             depends: PhpBrowser
-        - \dagsta\pms\integrations\codeception\MockAwait
+        - \ALDIDigitalServices\pms\integrations\codeception\MockAwait
 ```
 
 

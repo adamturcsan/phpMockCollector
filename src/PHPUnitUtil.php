@@ -1,5 +1,5 @@
 <?php
-namespace dagsta\pms;
+namespace ALDIDigitalServices\pms;
 class PHPUnitUtil
 {
     public static function callMethod($obj, $name, array $args = []) {

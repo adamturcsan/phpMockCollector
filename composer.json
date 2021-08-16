@@ -5,8 +5,8 @@
     },
         "autoload": {
             "psr-4": {
-                "dagsta\\pms\\": "src/",
-                "dagsta\\pms\\rules\\": "src/rules"
+                "ALDIDigitalServices\\pms\\": "src/",
+                "ALDIDigitalServices\\pms\\rules\\": "src/rules"
             }
         },
     "require-dev": {

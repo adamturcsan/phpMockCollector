@@ -2,7 +2,7 @@
 
 if(!class_exists("helloPhpController",false))
 {
-    class helloPhpController implements \dagsta\pms\customCallbackInterface
+    class helloPhpController implements \ALDIDigitalServices\pms\customCallbackInterface
     {
         public function run(\Symfony\Component\HttpFoundation\Request &$request, \Symfony\Component\HttpFoundation\Response &$response): array{
             $response->setContent("Hallo PHP to ".$request->getPathInfo());

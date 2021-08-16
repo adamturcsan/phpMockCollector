@@ -1,5 +1,5 @@
 <?php
-namespace dagsta\pms;
+namespace ALDIDigitalServices\pms;
 
 interface ruleImplementationInterface
 {

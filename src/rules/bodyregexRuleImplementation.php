@@ -1,10 +1,10 @@
 <?php
 
 
-namespace dagsta\pms\rules;
+namespace ALDIDigitalServices\pms\rules;
 
 
-use dagsta\pms\ruleImplementationInterface;
+use ALDIDigitalServices\pms\ruleImplementationInterface;
 
 class bodyregexRuleImplementation implements ruleImplementationInterface
 {

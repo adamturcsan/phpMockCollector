@@ -45,15 +45,15 @@ final class PmcTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = "/hello";
         $_SERVER['REQUEST_METHOD'] = "GET";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'getPath'
         );
         $this->assertEquals("hello", $returnVal);
         $_SERVER['REQUEST_URI'] = "/hello/world";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'getPath'
         );
@@ -63,16 +63,16 @@ final class PmcTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = "/getCallPayload/GET/hello";
         $_SERVER['REQUEST_METHOD'] = "GET";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'getPath'
         );
         $this->assertEquals("/hello", $returnVal);
 
         $_SERVER['REQUEST_URI'] = "/getCallPayload/GET/hello/world";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'getPath'
         );
@@ -82,16 +82,16 @@ final class PmcTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = "/getCallPayload/GET/hello";
         $_SERVER['REQUEST_METHOD'] = "GET";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'getMethode'
         );
         $this->assertEquals("GET", $returnVal);
 
         $_SERVER['REQUEST_URI'] = "/getCallPayload/POST/hello/world";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'getMethode'
         );
@@ -101,16 +101,16 @@ final class PmcTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = "/hello";
         $_SERVER['REQUEST_METHOD'] = "GET";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'getMethode'
         );
         $this->assertEquals("GET", $returnVal);
 
         $_SERVER['REQUEST_METHOD'] = "POST";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'getMethode'
         );
@@ -120,8 +120,8 @@ final class PmcTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = "/hello";
         $_SERVER['REQUEST_METHOD'] = "GET";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'performMockRequest'
         );
@@ -133,16 +133,16 @@ final class PmcTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = "/hello";
         $_GET['hallo'] = "b";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'performMockRequest'
         );
         $this->assertEquals("Hallo Welt with hallo param is b", $m->getResponseObject()->getContent());
 
         $_GET['hallo'] = "a";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'performMockRequest'
         );
@@ -151,25 +151,25 @@ final class PmcTest extends TestCase
 
     public function testIfRequestIsStored(): void {
         $this->assertFileExists(__DIR__."/../data/GET/hello.dat");
-        $this->assertEquals(file_get_contents(__DIR__."/__data/request_hello"), file_get_contents(__DIR__."/../data/GET/hello.dat"), "Request is not correct");
+        $this->assertEquals(trim(file_get_contents(__DIR__."/__data/request_hello")), file_get_contents(__DIR__."/../data/GET/hello.dat"), "Request is not correct");
     }
 
     public function testFetchRequest(): void {
         $_SERVER['REQUEST_URI'] = "getCallPayload/GET/hello";
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'performCallFetch'
         );
-        $this->assertEquals(file_get_contents(__DIR__."/__data/request_hello"), $m->getResponseObject()->getContent());
+        $this->assertEquals(trim(file_get_contents(__DIR__."/__data/request_hello")), $m->getResponseObject()->getContent());
     }
 
 
     public function testGetConfigPath(): void{
         $_SERVER['REQUEST_URI'] = "/hello";
         $_GET = [];
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'getConfigPath'
         );
@@ -179,8 +179,8 @@ final class PmcTest extends TestCase
     public function testGetConfigPathForWildcart(): void{
         $_SERVER['REQUEST_URI'] = "/wildcard/1/hallo";
         $_GET = [];
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'getConfigPath'
         );
@@ -190,8 +190,8 @@ final class PmcTest extends TestCase
     public function testGetConfig(): void{
         $_SERVER['REQUEST_URI'] = "/hello";
         $_GET = [];
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'selectMatchingConfig'
         );
@@ -201,8 +201,8 @@ final class PmcTest extends TestCase
     public function testGetConfigForWildcart(): void{
         $_SERVER['REQUEST_URI'] = "/wildcard/1/hallo";
         $_GET = [];
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'selectMatchingConfig'
         );
@@ -211,8 +211,8 @@ final class PmcTest extends TestCase
     public function testGetConfigForSecondWildcart(): void{
         $_SERVER['REQUEST_URI'] = "/wildcard/1/2/hallo";
         $_GET = [];
-        $m = new \dagsta\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \dagsta\pms\PHPUnitUtil::callMethod(
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'selectMatchingConfig'
         );

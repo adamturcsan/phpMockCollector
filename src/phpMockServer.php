@@ -1,6 +1,6 @@
 <?php
 
-namespace dagsta\pms;
+namespace ALDIDigitalServices\pms;
 
 require_once "customCallbackInterface.php";
 
