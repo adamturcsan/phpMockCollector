@@ -1,7 +1,13 @@
 #How to use:
+Install phpMockServer using composer
+```
+composer require aldidigitalservices/php-mock-collector
+```
 
 Create a new instance of phpMockServer and run the run methode:
 ```php
+require_once 'vendor/autoload.php';
+
 $ms = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/mocks");
 $ms->run();
 ```
