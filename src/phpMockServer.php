@@ -234,6 +234,8 @@ class phpMockServer
         if (!file_exists(dirname($datapath))) {
             mkdir(dirname($datapath), 0700, true);
         }
+        //As Symfony request object is lazy with POST content we need to read it once ...
+        $this->request->getContent();
         $data = array("adddata" => $adddata, 'request' => base64_encode(serialize($this->request)));
         file_put_contents($datapath, json_encode($data));
     }
