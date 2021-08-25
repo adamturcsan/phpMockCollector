@@ -2,11 +2,13 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
+
 final class PmcTest extends TestCase
 {
 
     protected function setUp(): void
     {
+        global $_SERVER, $_GET, $_POST, $_REQUEST;
         $_SERVER['USER'] = "vagrant";
         $_SERVER['HOME'] = "/home/vagrant";
         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7";
@@ -37,98 +39,115 @@ final class PmcTest extends TestCase
         $_SERVER['PHP_SELF'] = "/index.php";
         $_SERVER['REQUEST_TIME_FLOAT'] = "1619118802.5351";
         $_SERVER['REQUEST_TIME'] = "1619118802";
-
+        $_GET = array();
+        $_POST = array();
+        $_REQUEST = array_merge($_GET,$_POST);
 
     }
 
-    public function testCanGetPathForNormalRequest(): void
+    protected function cleanRequestFileContent($content): string
     {
-        $_SERVER['REQUEST_URI'] = "/hello";
-        $_SERVER['REQUEST_METHOD'] = "GET";
-        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
-            $m,
-            'getPath'
-        );
-        $this->assertEquals("hello", $returnVal);
-        $_SERVER['REQUEST_URI'] = "/hello/world";
-        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
-            $m,
-            'getPath'
-        );
-        $this->assertEquals("hello/world", $returnVal);
+        $json = json_decode($content,true);
+        $requestString = base64_decode($json["request"]);
+        /* @var \Symfony\Component\HttpFoundation\Request $request*/
+        $request = unserialize($requestString);
+        $params = array("REQUEST_URI" => $request->server->get("REQUEST_URI"));
+        $request->server = new \Symfony\Component\HttpFoundation\ServerBag($params);
+        $requestString = serialize($request);
+        $json["request"] = base64_encode($requestString);
+        return trim(json_encode($json));
     }
-    public function testCanGetPathForFetchRequest(): void
-    {
-        $_SERVER['REQUEST_URI'] = "/getCallPayload/GET/hello";
-        $_SERVER['REQUEST_METHOD'] = "GET";
-        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
-            $m,
-            'getPath'
-        );
-        $this->assertEquals("/hello", $returnVal);
 
-        $_SERVER['REQUEST_URI'] = "/getCallPayload/GET/hello/world";
-        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
-            $m,
-            'getPath'
-        );
-        $this->assertEquals("/hello/world", $returnVal);
-    }
-    public function testCanGetMethodeForFetchRequest(): void
-    {
-        $_SERVER['REQUEST_URI'] = "/getCallPayload/GET/hello";
-        $_SERVER['REQUEST_METHOD'] = "GET";
-        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
-            $m,
-            'getMethode'
-        );
-        $this->assertEquals("GET", $returnVal);
+        public function testCanGetPathForNormalRequest(): void
+        {
+            $_SERVER['REQUEST_URI'] = "/hello";
+            $_SERVER['REQUEST_METHOD'] = "GET";
 
-        $_SERVER['REQUEST_URI'] = "/getCallPayload/POST/hello/world";
-        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
-            $m,
-            'getMethode'
-        );
-        $this->assertEquals("POST", $returnVal);
-    }
-    public function testCanGetMethodeForMockRequest(): void
-    {
-        $_SERVER['REQUEST_URI'] = "/hello";
-        $_SERVER['REQUEST_METHOD'] = "GET";
-        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
-            $m,
-            'getMethode'
-        );
-        $this->assertEquals("GET", $returnVal);
+            $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+            $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+                $m,
+                'getPath'
+            );
+            $this->assertEquals("hello", $returnVal);
+            $_SERVER['REQUEST_URI'] = "/hello/world";
+            $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+            $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+                $m,
+                'getPath'
+            );
+            $this->assertEquals("hello/world", $returnVal);
+        }
+        public function testCanGetPathForFetchRequest(): void
+        {
+            $_SERVER['REQUEST_URI'] = "/getCallPayload/GET/hello";
+            $_SERVER['REQUEST_METHOD'] = "GET";
+            $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+            $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+                $m,
+                'getPath'
+            );
+            $this->assertEquals("/hello", $returnVal);
 
-        $_SERVER['REQUEST_METHOD'] = "POST";
-        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
-            $m,
-            'getMethode'
-        );
-        $this->assertEquals("POST", $returnVal);
-    }
-    public function testCanMockRequestBeFullfilled(): void
-    {
-        $_SERVER['REQUEST_URI'] = "/hello";
-        $_SERVER['REQUEST_METHOD'] = "GET";
-        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
-        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
-            $m,
-            'performMockRequest'
-        );
-        $this->assertEquals("Hallo Welt", $m->getResponseObject()->getContent());
+            $_SERVER['REQUEST_URI'] = "/getCallPayload/GET/hello/world";
+            $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+            $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+                $m,
+                'getPath'
+            );
+            $this->assertEquals("/hello/world", $returnVal);
+        }
+        public function testCanGetMethodeForFetchRequest(): void
+        {
+            $_SERVER['REQUEST_URI'] = "/getCallPayload/GET/hello";
+            $_SERVER['REQUEST_METHOD'] = "GET";
+            $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+            $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+                $m,
+                'getMethode'
+            );
+            $this->assertEquals("GET", $returnVal);
+
+            $_SERVER['REQUEST_URI'] = "/getCallPayload/POST/hello/world";
+            $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+            $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+                $m,
+                'getMethode'
+            );
+            $this->assertEquals("POST", $returnVal);
+        }
+        public function testCanGetMethodeForMockRequest(): void
+        {
+            $_SERVER['REQUEST_URI'] = "/hello";
+            $_SERVER['REQUEST_METHOD'] = "GET";
+            $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+            $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+                $m,
+                'getMethode'
+            );
+            $this->assertEquals("GET", $returnVal);
+
+            $_SERVER['REQUEST_METHOD'] = "POST";
+            $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+            $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+                $m,
+                'getMethode'
+            );
+            $this->assertEquals("POST", $returnVal);
+        }
+        public function testCanMockRequestBeFullfilled(): void
+        {
+            $_SERVER['REQUEST_URI'] = "/hello";
+            $_SERVER['REQUEST_METHOD'] = "GET";
+            $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+            $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+                $m,
+                'performMockRequest'
+            );
+            $this->assertEquals("Hallo Welt", $m->getResponseObject()->getContent());
 
 
-    }
+        }
+
     public function testIsParamRuleWorking(): void
     {
         $_SERVER['REQUEST_URI'] = "/hello";
@@ -151,7 +170,7 @@ final class PmcTest extends TestCase
 
     public function testIfRequestIsStored(): void {
         $this->assertFileExists(__DIR__."/../data/GET/hello.dat");
-        $this->assertEquals(trim(file_get_contents(__DIR__."/__data/request_hello")), file_get_contents(__DIR__."/../data/GET/hello.dat"), "Request is not correct");
+        $this->assertEquals($this->cleanRequestFileContent(file_get_contents(__DIR__."/__data/request_hello")), $this->cleanRequestFileContent(file_get_contents(__DIR__."/../data/GET/hello.dat")), "Request is not correct");
     }
 
     public function testFetchRequest(): void {
@@ -161,7 +180,7 @@ final class PmcTest extends TestCase
             $m,
             'performCallFetch'
         );
-        $this->assertEquals(trim(file_get_contents(__DIR__."/__data/request_hello")), $m->getResponseObject()->getContent());
+        $this->assertEquals($this->cleanRequestFileContent(file_get_contents(__DIR__."/__data/request_hello")), $this->cleanRequestFileContent($m->getResponseObject()->getContent()));
     }
 
 
@@ -217,6 +236,18 @@ final class PmcTest extends TestCase
             'selectMatchingConfig'
         );
         $this->assertEqualsCanonicalizing($returnVal,["header" => ['X-Bla' => "Hallo", "z-bla" => "z-bla"], "httpcode" => 200,  "body" => "Hallo Wildcard2"]);
+    }
+    public function testProxy(): void
+    {
+        $_SERVER['REQUEST_URI'] = "/proxy";
+        $_SERVER['REQUEST_METHOD'] = "GET";
+        $_GET = [];
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+            $m,
+            'performMockRequest'
+        );
+        $this->assertJsonStringEqualsJsonString('{"userId": 1,"id": 1,"title": "delectus aut autem","completed": false}', $m->getResponseObject()->getContent());
     }
 
 }

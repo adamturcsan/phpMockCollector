@@ -28,6 +28,7 @@ header: is a array of headers that should be send to the client (key => value)
 httpcode: The responecode that is returned by the mock. e.g. 404
 latency: This latency is added to the execution time. (Value in seconds)
 customCallback: the Classname of the customCallback that should be used to create the response. This option is exclusiv so the other options ( exept rules will not apply)
+ProxyPath: A URL to proxy the request to
 rules: An array of rules that has to apply for this response. See rules
 ```
 
