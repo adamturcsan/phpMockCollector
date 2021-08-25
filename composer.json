@@ -11,7 +11,11 @@
     ],
     "require": {
         "php": "~7.4",
-        "symfony/http-foundation": "^5.2"
+        "symfony/http-foundation": "^5.2",
+        "guzzlehttp/guzzle": "^7.0",
+        "symfony/psr-http-message-bridge": "^2.1",
+        "guzzlehttp/psr7": "^2.0",
+        "nyholm/psr7": "^1.4"
     },
     "autoload": {
         "psr-4": {

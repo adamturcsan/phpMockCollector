@@ -12,6 +12,7 @@ class phpMockServer
 {
     const MOCK_KEY_RULES = 'rules';
     const MOCK_KEY_CUSTOM_CALLBACK = 'customCallback';
+    const MOCK_KEY_PROXY_PATH = 'proxyPath';
     const MOCK_KEY_LATENCY = 'latency';
     /* I would rename it to `headers` */
     const MOCK_KEY_HEADER = 'header';
@@ -100,6 +101,12 @@ class phpMockServer
             }
 
             $this->storeMockRequest($adddata);
+            return true;
+        }
+
+        else if(isset($conf[self::MOCK_KEY_PROXY_PATH])){
+            $phpProxy = new \ALDIDigitalServices\pms\phpProxy();
+            $this->response = $phpProxy->performRequest($this->request,$conf[self::MOCK_KEY_PROXY_PATH]);
             return true;
         }
 

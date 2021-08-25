@@ -237,5 +237,17 @@ final class PmcTest extends TestCase
         );
         $this->assertEqualsCanonicalizing($returnVal,["header" => ['X-Bla' => "Hallo", "z-bla" => "z-bla"], "httpcode" => 200,  "body" => "Hallo Wildcard2"]);
     }
+    public function testProxy(): void
+    {
+        $_SERVER['REQUEST_URI'] = "/proxy";
+        $_SERVER['REQUEST_METHOD'] = "GET";
+        $_GET = [];
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+            $m,
+            'performMockRequest'
+        );
+        $this->assertJsonStringEqualsJsonString('{"userId": 1,"id": 1,"title": "delectus aut autem","completed": false}', $m->getResponseObject()->getContent());
+    }
 
 }
