@@ -1,0 +1,27 @@
+{
+  "POST": [
+    {
+      "rules": {
+        "bodyregex": [
+          "/Welt/m"
+        ]
+      },
+      "body": "Hallo Post with regex"
+    },{
+      "body": "Hallo Post"
+    }
+  ],
+  "GET": [
+    {
+      "rules": {
+        "preselection": "YES"
+      },
+      "httpcode": 200,
+      "body": "Preselection"
+    },
+    {
+      "httpcode": 200,
+      "body": "Default"
+    }
+  ]
+}

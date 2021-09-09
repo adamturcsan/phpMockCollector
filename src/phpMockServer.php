@@ -14,7 +14,6 @@ class phpMockServer
     const MOCK_KEY_CUSTOM_CALLBACK = 'customCallback';
     const MOCK_KEY_PROXY_PATH = 'proxyPath';
     const MOCK_KEY_LATENCY = 'latency';
-    /* I would rename it to `headers` */
     const MOCK_KEY_HEADER = 'header';
     const MOCK_KEY_HTTPCODE = 'httpcode';
     const MOCK_KEY_BODY = 'body';
@@ -22,6 +21,7 @@ class phpMockServer
     private $response;
     private const FETCHCALL = 1;
     private const MOCKCALL = 2;
+    private const RETURNPRESELECTION = 3;
 
     private $configBasePath;
     private $pathParams;
@@ -38,7 +38,9 @@ class phpMockServer
     {
         if ($this->determineRequestType() == self::FETCHCALL) {
             $this->performCallFetch();
-        } else {
+        } else if ($this->determineRequestType() == self::RETURNPRESELECTION) {
+            $this->performPreselection();
+        } else{
             $this->performMockRequest();
         }
         $this->response->send();
@@ -47,6 +49,11 @@ class phpMockServer
     protected function performCallFetch(): void
     {
         $this->readMockedRequest();
+    }
+
+    protected function performPreselection(): void
+    {
+        $this->storePreselection();
     }
 
     private function getConfigPath($onlyRelativPath = false): string
@@ -183,33 +190,25 @@ class phpMockServer
         return false;
     }
 
-    /**
-     * could be moved to the RequestDispatcher class
-     *
-     * RequestDispatcher
-     * accepts request (or takes from globals)
-     * returns object with:
-     * - request type
-     * - request method
-     * - request path
-     */
     private function determineRequestType(): int
     {
         $parts = explode("/", $this->request->getPathInfo());
 
+
         if (count($parts) > 3 && $parts[1] == "getCallPayload") {
             return self::FETCHCALL;
         }
+        if (count($parts) > 3 && $parts[1] == "returnPreselection") {
+            return self::RETURNPRESELECTION;
+        }
+
 
         return self::MOCKCALL;
     }
 
-    /**
-     * should be moved to the RequestDispatcher class
-     */
     private function getMethode()
     {
-        if ($this->determineRequestType() == self::FETCHCALL) {
+        if ($this->determineRequestType() != self::MOCKCALL) {
             $parts = explode("/", $this->request->getPathInfo());
             return strtoupper($parts[2]);
         } else {
@@ -217,13 +216,10 @@ class phpMockServer
         }
     }
 
-    /**
-     * should be moved to the RequestDispatcher class
-     */
     private function getPath()
     {
         $parts = explode("/", $this->request->getPathInfo());
-        if ($this->determineRequestType() == self::FETCHCALL) {
+        if ($this->determineRequestType() != self::MOCKCALL) {
             if ($parts[count($parts) - 1] == "") {
                 unset($parts[count($parts) - 1]);
             }
@@ -232,6 +228,21 @@ class phpMockServer
             return implode("/", $parts);
         }
         return substr($this->request->getPathInfo(), 1);
+    }
+
+    private function storePreselection(): void
+    {
+        $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR
+            . $this->getPath().".psdat";
+        if (!file_exists(dirname($datapath))) {
+            mkdir(dirname($datapath), 0700, true);
+        }
+        $data = $this->request->get("value");
+        if(!$data)
+        {
+            return;
+        }
+        file_put_contents($datapath, $data);
     }
 
     private function storeMockRequest($adddata = [])

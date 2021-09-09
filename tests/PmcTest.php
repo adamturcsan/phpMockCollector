@@ -237,7 +237,7 @@ final class PmcTest extends TestCase
         );
         $this->assertEqualsCanonicalizing($returnVal,["header" => ['X-Bla' => "Hallo", "z-bla" => "z-bla"], "httpcode" => 200,  "body" => "Hallo Wildcard2"]);
     }
-    public function testProxy(): void
+    /*public function testProxy(): void
     {
         $_SERVER['REQUEST_URI'] = "/proxy";
         $_SERVER['REQUEST_METHOD'] = "GET";
@@ -248,6 +248,35 @@ final class PmcTest extends TestCase
             'performMockRequest'
         );
         $this->assertJsonStringEqualsJsonString('{"userId": 1,"id": 1,"title": "delectus aut autem","completed": false}', $m->getResponseObject()->getContent());
+    }*/
+
+    public function testPreselectionRuleIsWorking(): void
+    {
+        $_SERVER['REQUEST_URI'] = "/preselection";
+        $_GET = array();
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+            $m,
+            'run'
+        );
+        $this->assertEquals("Default", $m->getResponseObject()->getContent());
+
+        $_SERVER['REQUEST_URI'] = "returnPreselection/GET/preselection";
+        $_GET = array("value"=> "YES");
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+            $m,
+            'run'
+        );
+
+        $_SERVER['REQUEST_URI'] = "/preselection";
+        $_GET = array();
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+            $m,
+            'run'
+        );
+        $this->assertEquals("Preselection", $m->getResponseObject()->getContent());
     }
 
 }
