@@ -4,6 +4,7 @@ namespace ALDIDigitalServices\pms\integrations\codeception;
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
+use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\Request;
 
 class MockAwait extends \Codeception\Module
@@ -63,5 +64,21 @@ class MockAwait extends \Codeception\Module
         }
         $this->lastrequest = $req;
         $this->assertTrue(is_a($this->lastrequest, 'Symfony\Component\HttpFoundation\Request'));
+    }
+
+    function setCallbackPreselection($path, $methode = 'GET', $value){
+        $client = new Client();
+        $host = "http://pmc.test/";
+        $this->adddata = [];
+        try{
+            $url = $host."returnPreselection/".$methode.'/'.$path;
+
+            $client->request('POST', $url, [
+                'body' => $value
+            ]);
+        }
+        catch(Exception $e){
+            $this->fail($e->getMessage());
+        }
     }
 }

@@ -55,6 +55,7 @@ You can configure rules like this:
 ```
 param: is a list of key values that has to be set. Value can be *.
 bodyregex: a list of regex that would be performed on the body content
+preselection: you can define a preseletion upfront and check with this rule if the preselection match the value that was set by preselection
 ```
 
 You can implement additional rules by implementing the ruleImplementationInterface. 
