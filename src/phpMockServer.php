@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class phpMockServer
 {
-    const X_RAY_MOCK_HEADER = 'x-ray-mock-header';
+    const HEADER_X_MOCK_REQUEST_ID = 'x-mock-request-id';
     const MOCK_KEY_RULES = 'rules';
     const MOCK_KEY_CUSTOM_CALLBACK = 'customCallback';
     const MOCK_KEY_PROXY_PATH = 'proxyPath';
@@ -207,10 +207,10 @@ class phpMockServer
         return self::MOCKCALL;
     }
 
-    private function getXRaySuffix()
+    private function getRequestId(): ?string
     {
-        if ($this->request->headers->has(static::X_RAY_MOCK_HEADER)) {
-            return $this->request->headers->get(static::X_RAY_MOCK_HEADER);
+        if ($this->request->headers->has(static::HEADER_X_MOCK_REQUEST_ID)) {
+            return $this->request->headers->get(static::HEADER_X_MOCK_REQUEST_ID);
         }
 
         return "";
@@ -242,12 +242,14 @@ class phpMockServer
 
     private function storePreselection(): void
     {
-        $methodSuffix = $this->getXRaySuffix();
-        if (strlen($methodSuffix) > 0) {
-            $methodSuffix = $methodSuffix . DIRECTORY_SEPARATOR;
+        $requestId = $this->getRequestId();
+        $requestIdWithDirectorySeparator = "";
+        if (strlen($requestId) > 0) {
+            $requestIdWithDirectorySeparator = $requestId . DIRECTORY_SEPARATOR;
         }
 
-        $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR . $methodSuffix
+        $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR
+            . $requestIdWithDirectorySeparator
             . $this->getPath().".psdat";
         if (!file_exists(dirname($datapath))) {
             mkdir(dirname($datapath), 0700, true);
@@ -262,12 +264,14 @@ class phpMockServer
 
     private function storeMockRequest($adddata = [])
     {
-        $methodSuffix = $this->getXRaySuffix();
-        if (strlen($methodSuffix) > 0) {
-            $methodSuffix = $methodSuffix . DIRECTORY_SEPARATOR;
+        $requestId = $this->getRequestId();
+        $requestIdWithDirectorySeparator = "";
+        if (strlen($requestId) > 0) {
+            $requestIdWithDirectorySeparator = $requestId . DIRECTORY_SEPARATOR;
         }
 
-        $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR . $methodSuffix
+        $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR
+            . $requestIdWithDirectorySeparator
             . $this->getPath().".dat";
         if (!file_exists(dirname($datapath))) {
             mkdir(dirname($datapath), 0700, true);
@@ -287,12 +291,14 @@ class phpMockServer
             $this->response->setStatusCode(404);
             return;
         }
-        $methodeSuffix = $this->getXRaySuffix();
-        if (strlen($methodeSuffix) > 0) {
-            $methodeSuffix = DIRECTORY_SEPARATOR . $methodeSuffix;
+        $requestId = $this->getRequestId();
+        $requestIdWithDirectorySeparator = "";
+        if (strlen($requestId) > 0) {
+            $requestIdWithDirectorySeparator = DIRECTORY_SEPARATOR . $requestId;
         }
 
-        $datapath = __DIR__ . '/../data/' . $this->getMethode() . $methodeSuffix
+        $datapath = __DIR__ . '/../data/' . $this->getMethode()
+            . $requestIdWithDirectorySeparator
             . $this->getPath().".dat";
         $timeout = $this->request->headers->get("X-timeout", 60);
         $count = 0;
