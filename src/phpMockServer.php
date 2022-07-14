@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class phpMockServer
 {
+    const X_RAY_MOCK_HEADER = 'x-ray-mock-header';
     const MOCK_KEY_RULES = 'rules';
     const MOCK_KEY_CUSTOM_CALLBACK = 'customCallback';
     const MOCK_KEY_PROXY_PATH = 'proxyPath';
@@ -206,6 +207,15 @@ class phpMockServer
         return self::MOCKCALL;
     }
 
+    private function getXRaySuffix()
+    {
+        if ($this->request->headers->has(static::X_RAY_MOCK_HEADER)) {
+            return $this->request->headers->get(static::X_RAY_MOCK_HEADER);
+        }
+
+        return "";
+    }
+
     private function getMethode()
     {
         if ($this->determineRequestType() != self::MOCKCALL) {
@@ -232,7 +242,12 @@ class phpMockServer
 
     private function storePreselection(): void
     {
-        $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR
+        $methodSuffix = $this->getXRaySuffix();
+        if (strlen($methodSuffix) > 0) {
+            $methodSuffix = $methodSuffix . DIRECTORY_SEPARATOR;
+        }
+
+        $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR . $methodSuffix
             . $this->getPath().".psdat";
         if (!file_exists(dirname($datapath))) {
             mkdir(dirname($datapath), 0700, true);
@@ -247,7 +262,12 @@ class phpMockServer
 
     private function storeMockRequest($adddata = [])
     {
-        $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR
+        $methodSuffix = $this->getXRaySuffix();
+        if (strlen($methodSuffix) > 0) {
+            $methodSuffix = $methodSuffix . DIRECTORY_SEPARATOR;
+        }
+
+        $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR . $methodSuffix
             . $this->getPath().".dat";
         if (!file_exists(dirname($datapath))) {
             mkdir(dirname($datapath), 0700, true);
@@ -267,7 +287,12 @@ class phpMockServer
             $this->response->setStatusCode(404);
             return;
         }
-        $datapath = __DIR__ . '/../data/' . $this->getMethode()
+        $methodeSuffix = $this->getXRaySuffix();
+        if (strlen($methodeSuffix) > 0) {
+            $methodeSuffix = DIRECTORY_SEPARATOR . $methodeSuffix;
+        }
+
+        $datapath = __DIR__ . '/../data/' . $this->getMethode() . $methodeSuffix
             . $this->getPath().".dat";
         $timeout = $this->request->headers->get("X-timeout", 60);
         $count = 0;

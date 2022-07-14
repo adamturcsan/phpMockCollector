@@ -8,10 +8,18 @@ use ALDIDigitalServices\pms\ruleImplementationInterface;
 
 class preselectionRuleImplementation implements ruleImplementationInterface
 {
+    /**
+     * @uses \ALDIDigitalServices\pms\phpMockServer::X_RAY_MOCK_HEADER
+     */
+    const X_RAY_MOCK_HEADER = 'x-ray-mock-header';
 
     public static function check(\Symfony\Component\HttpFoundation\Request &$request, $rules)
     {
-        $preselectionValue = self::readPreselection($request->getMethod(),substr($request->getPathInfo(), 1));
+        $preselectionValue = self::readPreselection(
+            $request->getMethod(),
+            $request->headers->get(static::X_RAY_MOCK_HEADER),
+            substr($request->getPathInfo(), 1)
+        );
         if(!$preselectionValue)
         {
             return false;
@@ -24,9 +32,13 @@ class preselectionRuleImplementation implements ruleImplementationInterface
         return true;
     }
 
-    protected static function readPreselection($methode, $path)
+    protected static function readPreselection($methode, $xRayHeader, $path)
     {
-        $datapath = __DIR__ . '/../../data/' . $methode . "/"
+        if (strlen($xRayHeader) > 0) {
+            $xRayHeader = "/" . $xRayHeader;
+        }
+
+        $datapath = __DIR__ . '/../../data/' . $methode . $xRayHeader . "/"
             . $path.".psdat";
         if(file_exists($datapath))
         {
