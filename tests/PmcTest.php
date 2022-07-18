@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 final class PmcTest extends TestCase
 {
-    const X_RAY_MOCK_HEADER_FOR_SERVER_ARRAY = 'HTTP_X_RAY_MOCK_HEADER';
+    const HEADER_X_MOCK_REQUEST_ID_FOR_SERVER_ARRAY = 'HTTP_X_MOCK_REQUEST_ID';
 
     protected function setUp(): void
     {
@@ -188,11 +188,11 @@ final class PmcTest extends TestCase
         $this->assertEquals($this->cleanRequestFileContent(file_get_contents(__DIR__."/__data/request_hello")), $this->cleanRequestFileContent($m->getResponseObject()->getContent()));
     }
 
-    public function testXRayCanMockRequestBeFullfilled(): void
+    public function testCanMockRequestBeFullfilledWithXMockRequestId(): void
     {
         $_SERVER['REQUEST_URI'] = "/hello";
         $_SERVER['REQUEST_METHOD'] = "GET";
-        $_SERVER[PmcTest::X_RAY_MOCK_HEADER_FOR_SERVER_ARRAY] = 'xray.test';
+        $_SERVER[PmcTest::HEADER_X_MOCK_REQUEST_ID_FOR_SERVER_ARRAY] = 'xray.test';
         $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
         $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
@@ -201,10 +201,10 @@ final class PmcTest extends TestCase
         $this->assertEquals("Hallo Welt", $m->getResponseObject()->getContent());
     }
 
-    public function testXRayIsParamRuleWorking(): void
+    public function testIsParamRuleWorkingWithXMockRequestId(): void
     {
         $_SERVER['REQUEST_URI'] = "/hello";
-        $_SERVER[PmcTest::X_RAY_MOCK_HEADER_FOR_SERVER_ARRAY] = 'xray.test';
+        $_SERVER[PmcTest::HEADER_X_MOCK_REQUEST_ID_FOR_SERVER_ARRAY] = 'xray.test';
         $_GET['hallo'] = "b";
         $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
         $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
@@ -222,20 +222,20 @@ final class PmcTest extends TestCase
         $this->assertEquals("Hallo Welt with hallo * param", $m->getResponseObject()->getContent());
     }
 
-    public function testXRayIfRequestIsStored(): void {
+    public function testIfRequestWithXMockRequestIdIsStored(): void {
         $this->assertFileExists(__DIR__."/../data/GET/xray.test/hello.dat");
-        $this->assertEquals($this->cleanRequestFileContent(file_get_contents(__DIR__."/__data/request_hello")), $this->cleanRequestFileContent(file_get_contents(__DIR__."/../data/GET/xray.test/hello.dat")), "Request is not correct");
+        $this->assertEquals($this->cleanRequestFileContent(file_get_contents(__DIR__."/__data/request_hello_with_request_id")), $this->cleanRequestFileContent(file_get_contents(__DIR__."/../data/GET/xray.test/hello.dat")), "Request is not correct");
     }
 
-    public function testXRayFetchRequest(): void {
+    public function testFetchRequestWithXMockRequestId(): void {
         $_SERVER['REQUEST_URI'] = "getCallPayload/GET/hello";
-        $_SERVER[PmcTest::X_RAY_MOCK_HEADER_FOR_SERVER_ARRAY] = 'xray.test';
+        $_SERVER[PmcTest::HEADER_X_MOCK_REQUEST_ID_FOR_SERVER_ARRAY] = 'xray.test';
         $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
         $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
             'performCallFetch'
         );
-        $this->assertEquals($this->cleanRequestFileContent(file_get_contents(__DIR__."/__data/request_hello")), $this->cleanRequestFileContent($m->getResponseObject()->getContent()));
+        $this->assertEquals($this->cleanRequestFileContent(file_get_contents(__DIR__."/__data/request_hello_with_request_id")), $this->cleanRequestFileContent($m->getResponseObject()->getContent()));
     }
     
     public function testGetConfigPath(): void{
