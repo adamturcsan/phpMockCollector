@@ -9,16 +9,16 @@ use ALDIDigitalServices\pms\ruleImplementationInterface;
 class preselectionRuleImplementation implements ruleImplementationInterface
 {
     /**
-     * @uses \ALDIDigitalServices\pms\phpMockServer::HEADER_X_MOCK_REQUEST_ID
+     * @uses \ALDIDigitalServices\pms\phpMockServer::HEADER_X_TRACKING_REQUEST_ID
      */
-    const HEADER_X_MOCK_REQUEST_ID = 'x-mock-request-id';
+    const HEADER_X_TRACKING_REQUEST_ID = 'x-tracking-request-id';
 
     public static function check(\Symfony\Component\HttpFoundation\Request &$request, $rules)
     {
         $preselectionValue = self::readPreselection(
             $request->getMethod(),
-            $request->headers->get(static::HEADER_X_MOCK_REQUEST_ID),
-            substr($request->getPathInfo(), 1)
+            substr($request->getPathInfo(), 1),
+            $request->headers->get(static::HEADER_X_TRACKING_REQUEST_ID)
         );
         if(!$preselectionValue)
         {
@@ -32,15 +32,15 @@ class preselectionRuleImplementation implements ruleImplementationInterface
         return true;
     }
 
-    protected static function readPreselection($methode, $xMockRequestId, $path)
+    protected static function readPreselection($methode, $path, ?string $trackingRequestId = null)
     {
-        $xMockRequestIdWithSlash = "";
-        if (strlen($xMockRequestId) > 0) {
-            $xMockRequestIdWithSlash = "/" . $xMockRequestId;
+        $trackingRequestIdWithSlash = "";
+        if ($trackingRequestId !== null && strlen($trackingRequestId) > 0) {
+            $trackingRequestIdWithSlash = "/" . $trackingRequestId;
         }
 
         $datapath = __DIR__ . '/../../data/' . $methode
-            . $xMockRequestIdWithSlash
+            . $trackingRequestIdWithSlash
             . "/" . $path . ".psdat";
         if(file_exists($datapath))
         {

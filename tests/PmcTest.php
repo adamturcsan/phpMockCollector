@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 final class PmcTest extends TestCase
 {
-    const HEADER_X_MOCK_REQUEST_ID_FOR_SERVER_ARRAY = 'HTTP_X_MOCK_REQUEST_ID';
+    const HEADER_X_TRACKING_REQUEST_ID_FOR_SERVER_ARRAY = 'HTTP_X_TRACKING_REQUEST_ID';
 
     protected function setUp(): void
     {
@@ -192,7 +192,7 @@ final class PmcTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = "/hello";
         $_SERVER['REQUEST_METHOD'] = "GET";
-        $_SERVER[PmcTest::HEADER_X_MOCK_REQUEST_ID_FOR_SERVER_ARRAY] = 'request_id.test';
+        $_SERVER[PmcTest::HEADER_X_TRACKING_REQUEST_ID_FOR_SERVER_ARRAY] = 'request_id.test';
         $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
         $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
@@ -204,7 +204,7 @@ final class PmcTest extends TestCase
     public function testIsParamRuleWorkingWithXMockRequestId(): void
     {
         $_SERVER['REQUEST_URI'] = "/hello";
-        $_SERVER[PmcTest::HEADER_X_MOCK_REQUEST_ID_FOR_SERVER_ARRAY] = 'request_id.test';
+        $_SERVER[PmcTest::HEADER_X_TRACKING_REQUEST_ID_FOR_SERVER_ARRAY] = 'request_id.test';
         $_GET['hallo'] = "b";
         $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
         $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
@@ -229,7 +229,7 @@ final class PmcTest extends TestCase
 
     public function testFetchRequestWithXMockRequestId(): void {
         $_SERVER['REQUEST_URI'] = "getCallPayload/GET/hello";
-        $_SERVER[PmcTest::HEADER_X_MOCK_REQUEST_ID_FOR_SERVER_ARRAY] = 'request_id.test';
+        $_SERVER[PmcTest::HEADER_X_TRACKING_REQUEST_ID_FOR_SERVER_ARRAY] = 'request_id.test';
         $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
         $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
