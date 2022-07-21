@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class phpMockServer
 {
+    const HEADER_X_TRACKING_REQUEST_ID = 'x-tracking-request-id';
     const MOCK_KEY_RULES = 'rules';
     const MOCK_KEY_CUSTOM_CALLBACK = 'customCallback';
     const MOCK_KEY_PROXY_PATH = 'proxyPath';
@@ -206,6 +207,15 @@ class phpMockServer
         return self::MOCKCALL;
     }
 
+    private function getTrackingRequestId(string $resultPrefix = '', string $resultPostfix = ''): ?string
+    {
+        if ($this->request->headers->has(static::HEADER_X_TRACKING_REQUEST_ID)) {
+            return $resultPrefix . $this->request->headers->get(static::HEADER_X_TRACKING_REQUEST_ID) . $resultPostfix;
+        }
+
+        return "";
+    }
+
     private function getMethode()
     {
         if ($this->determineRequestType() != self::MOCKCALL) {
@@ -233,6 +243,7 @@ class phpMockServer
     private function storePreselection(): void
     {
         $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR
+            . $this->getTrackingRequestId('', DIRECTORY_SEPARATOR)
             . $this->getPath().".psdat";
         if (!file_exists(dirname($datapath))) {
             mkdir(dirname($datapath), 0700, true);
@@ -248,6 +259,7 @@ class phpMockServer
     private function storeMockRequest($adddata = [])
     {
         $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR
+            . $this->getTrackingRequestId('', DIRECTORY_SEPARATOR)
             . $this->getPath().".dat";
         if (!file_exists(dirname($datapath))) {
             mkdir(dirname($datapath), 0700, true);
@@ -267,7 +279,9 @@ class phpMockServer
             $this->response->setStatusCode(404);
             return;
         }
+
         $datapath = __DIR__ . '/../data/' . $this->getMethode()
+            . $this->getTrackingRequestId(DIRECTORY_SEPARATOR, '')
             . $this->getPath().".dat";
         $timeout = $this->request->headers->get("X-timeout", 60);
         $count = 0;
