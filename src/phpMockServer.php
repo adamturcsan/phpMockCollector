@@ -292,6 +292,7 @@ class phpMockServer
         if ($count == $timeout) {
             $this->response->setContent('Timeout');
             $this->response->setStatusCode(500);
+            return;
         }
         $this->response->setContent(file_get_contents($datapath));
         $this->response->setStatusCode(200);
