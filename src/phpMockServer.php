@@ -286,6 +286,7 @@ class phpMockServer
         $timeout = $this->request->headers->get("X-timeout", 60);
         $count = 0;
         while ($count < $timeout && !file_exists($datapath)) {
+            clearstatcache();
             sleep(1);
             $count++;
         }
