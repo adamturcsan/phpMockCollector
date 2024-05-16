@@ -245,9 +245,7 @@ class phpMockServer
         $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR
             . $this->getTrackingRequestId('', DIRECTORY_SEPARATOR)
             . $this->getPath().".psdat";
-        if (!file_exists(dirname($datapath))) {
-            mkdir(dirname($datapath), 0700, true);
-        }
+        $this->createDirectory(dirname($datapath));
         $data = $this->request->get("value");
         if(!$data)
         {
@@ -261,13 +259,18 @@ class phpMockServer
         $datapath = __DIR__ . '/../data/' . $this->request->getMethod() . DIRECTORY_SEPARATOR
             . $this->getTrackingRequestId('', DIRECTORY_SEPARATOR)
             . $this->getPath().".dat";
-        if (!file_exists(dirname($datapath))) {
-            mkdir(dirname($datapath), 0700, true);
-        }
+        $this->createDirectory(dirname($datapath));
         //As Symfony request object is lazy with POST content we need to read it once ...
         $this->request->getContent();
         $data = array("adddata" => $adddata, 'request' => base64_encode(serialize($this->request)));
         file_put_contents($datapath, json_encode($data));
+    }
+
+    private function createDirectory($directoryName)
+    {
+        if (!is_dir($directoryName) && !@mkdir($directoryName, 0700, true) && !is_dir($directoryName)) {
+            throw new \RuntimeException(sprintf('Directory "%s" could not be created', $directoryName));
+        }
     }
 
     private function readMockedRequest()
