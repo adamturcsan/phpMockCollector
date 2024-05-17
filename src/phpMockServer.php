@@ -266,9 +266,15 @@ class phpMockServer
         file_put_contents($datapath, json_encode($data));
     }
 
-    private function createDirectory($directoryName)
+    private function createDirectory($directoryName, int $attempt = 0)
     {
+        $attempt++;
         if (!is_dir($directoryName) && !@mkdir($directoryName, 0700, true) && !is_dir($directoryName)) {
+            if ($attempt < 10) {
+                usleep(200 * $attempt);
+                $this->createDirectory($directoryName, $attempt);
+                return;
+            }
             throw new \RuntimeException(sprintf('Directory "%s" could not be created', $directoryName));
         }
     }
