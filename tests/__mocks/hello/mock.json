@@ -51,5 +51,14 @@
       "latency": 5,
       "body": "Hallo Welt"
     }
+  ],
+  "OPTIONS": [
+    {
+      "header": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "*"
+      },
+      "httpcode": 200
+    }
   ]
 }

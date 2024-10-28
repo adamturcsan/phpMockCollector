@@ -99,14 +99,14 @@ final class PmcTest extends TestCase
         $this->assertEquals("/hello/world", $returnVal);
     }
 
-    public function testCanGetMethodeForFetchRequest(): void
+    public function testCangetMethodForFetchRequest(): void
     {
         $_SERVER['REQUEST_URI'] = "/getCallPayload/GET/hello";
         $_SERVER['REQUEST_METHOD'] = "GET";
         $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
         $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
-            'getMethode'
+            'getMethod'
         );
         $this->assertEquals("GET", $returnVal);
 
@@ -114,19 +114,19 @@ final class PmcTest extends TestCase
         $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
         $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
-            'getMethode'
+            'getMethod'
         );
         $this->assertEquals("POST", $returnVal);
     }
 
-    public function testCanGetMethodeForMockRequest(): void
+    public function testCangetMethodForMockRequest(): void
     {
         $_SERVER['REQUEST_URI'] = "/hello";
         $_SERVER['REQUEST_METHOD'] = "GET";
         $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
         $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
-            'getMethode'
+            'getMethod'
         );
         $this->assertEquals("GET", $returnVal);
 
@@ -134,7 +134,7 @@ final class PmcTest extends TestCase
         $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
         $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
             $m,
-            'getMethode'
+            'getMethod'
         );
         $this->assertEquals("POST", $returnVal);
     }
@@ -268,7 +268,7 @@ final class PmcTest extends TestCase
             $m,
             'selectMatchingConfig'
         );
-        $this->assertEqualsCanonicalizing($returnVal,["header" => ['X-Bla' => "Hallo", "z-bla" => "z-bla"], "httpcode" => 200, "latency" => 5, "body" => "Hallo Welt"]);
+        $this->assertEqualsCanonicalizing($returnVal,["header" => ['X-Bla' => "Hallo", "z-bla" => "z-bla"], 'method' => 'GET', "httpcode" => 200, "latency" => 5, "body" => "Hallo Welt"]);
     }
 
     public function testGetConfigForWildcart(): void{
@@ -279,7 +279,7 @@ final class PmcTest extends TestCase
             $m,
             'selectMatchingConfig'
         );
-        $this->assertEqualsCanonicalizing($returnVal,["header" => ['X-Bla' => "Hallo", "z-bla" => "z-bla"], "httpcode" => 200,  "body" => "Hallo Wildcard"]);
+        $this->assertEqualsCanonicalizing($returnVal,["header" => ['X-Bla' => "Hallo", "z-bla" => "z-bla"], 'method' => 'GET', "httpcode" => 200,  "body" => "Hallo Wildcard"]);
     }
     public function testGetConfigForSecondWildcart(): void{
         $_SERVER['REQUEST_URI'] = "/wildcard/1/2/hallo";
@@ -289,7 +289,7 @@ final class PmcTest extends TestCase
             $m,
             'selectMatchingConfig'
         );
-        $this->assertEqualsCanonicalizing($returnVal,["header" => ['X-Bla' => "Hallo", "z-bla" => "z-bla"], "httpcode" => 200,  "body" => "Hallo Wildcard2"]);
+        $this->assertEqualsCanonicalizing($returnVal,["header" => ['X-Bla' => "Hallo", "z-bla" => "z-bla"], 'method' => 'GET', "httpcode" => 200,  "body" => "Hallo Wildcard2"]);
     }
     /*public function testProxy(): void
     {
