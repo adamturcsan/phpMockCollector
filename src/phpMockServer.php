@@ -18,6 +18,8 @@ class phpMockServer
     const MOCK_KEY_HEADER = 'header';
     const MOCK_KEY_HTTPCODE = 'httpcode';
     const MOCK_KEY_BODY = 'body';
+    const MOCK_KEY_HTTP_METHOD = 'method';
+
     private $request;
     private $response;
     private const FETCHCALL = 1;
@@ -131,6 +133,8 @@ class phpMockServer
             /* I would expect this to be moved to headers inside mock, and add additional key `bodyIsJson` by which encode the body. */
             $this->response->headers->set('Content-Type', 'application/json');
             $this->response->setContent(json_encode($conf[self::MOCK_KEY_BODY]));
+        } elseif($conf[self::MOCK_KEY_HTTP_METHOD] == Request::METHOD_OPTIONS) {
+            $this->response->setContent($conf[self::MOCK_KEY_BODY] ?? null);
         } else {
             $this->response->setContent($conf[self::MOCK_KEY_BODY]);
         }
@@ -184,6 +188,7 @@ class phpMockServer
         if (isset($config[$method])) {
             foreach ($config[$method] as $key => $mock) {
                 if (!isset($mock[self::MOCK_KEY_RULES]) or $this->checkRules($mock[self::MOCK_KEY_RULES])) {
+                    $mock[self::MOCK_KEY_HTTP_METHOD] = $method;
                     return $mock;
                 }
             }
