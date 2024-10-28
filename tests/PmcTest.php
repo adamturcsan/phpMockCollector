@@ -343,7 +343,12 @@ final class PmcTest extends TestCase
             $m,
             'performMockRequest'
         );
-        $this->assertEqualsCanonicalizing('',$m->getResponseObject()->getContent());
+
+        $headerArray = $m->getResponseObject()->headers->all();
+        $this->assertArrayHasKey('access-control-allow-headers', $headerArray);
+        $this->assertArrayHasKey('access-control-allow-origin', $headerArray);
+        $this->assertSame(['*'], $headerArray['access-control-allow-headers']);
+        $this->assertSame(['*'], $headerArray['access-control-allow-origin']);
     }
 
 }
