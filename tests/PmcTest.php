@@ -333,4 +333,17 @@ final class PmcTest extends TestCase
         $this->assertEquals("Preselection", $m->getResponseObject()->getContent());
     }
 
+    public function testOptionsRequestsDoNotRequireBody(): void
+    {
+        $_SERVER['REQUEST_URI'] = "/hello";
+        $_SERVER['REQUEST_METHOD'] = 'OPTIONS';
+
+        $m = new \ALDIDigitalServices\pms\phpMockServer(__DIR__."/__mocks");
+        $returnVal = \ALDIDigitalServices\pms\PHPUnitUtil::callMethod(
+            $m,
+            'performMockRequest'
+        );
+        $this->assertEqualsCanonicalizing('',$m->getResponseObject()->getContent());
+    }
+
 }

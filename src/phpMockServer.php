@@ -129,7 +129,7 @@ class phpMockServer
         if (isset($conf[self::MOCK_KEY_HTTPCODE])) {
             $this->response->setStatusCode($conf[self::MOCK_KEY_HTTPCODE]);
         }
-        if (is_array($conf[self::MOCK_KEY_BODY])) {
+        if (is_array($conf[self::MOCK_KEY_BODY] ?? null)) {
             /* I would expect this to be moved to headers inside mock, and add additional key `bodyIsJson` by which encode the body. */
             $this->response->headers->set('Content-Type', 'application/json');
             $this->response->setContent(json_encode($conf[self::MOCK_KEY_BODY]));
